@@ -5,9 +5,14 @@ from ..models import Product
 from .forms import ProductoForm
 
 @productos_bp.route("/", methods=["GET","POST"])
+@productos_bp.route("/")
 def lista_productos():
     productos = Product.query.order_by(Product.nombre).all()
-    return render_template("productos/list.html", productos=productos)
+
+    # Obtener las categorías únicas que existen en la base de datos
+    categorias = sorted({p.categoria for p in productos if p.categoria})
+
+    return render_template("productos/list.html", productos=productos, categorias=categorias)
 
 @productos_bp.route("/nuevo", methods=["GET", "POST"])
 def nuevo_producto():
