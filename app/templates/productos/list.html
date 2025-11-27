@@ -49,16 +49,12 @@
                         <td class="align-middle">{{ p.nombre }}</td>
                         <td class="d-none d-md-table-cell align-middle">{{ p.unidad }}</td>
                         <td class="align-middle">
-                            <div class="mb-0">
-                                <div class="input-group cantidad-group" style="max-width: 150px;">
-                                    <button class="btn btn-outline-secondary btn-restar" type="button">-</button>
-                                    <input type="number"
-                                           min="0"
-                                           class="form-control text-center cantidad-input"
-                                           name="cantidad_{{ p.id }}"
-                                           value="{{ p.cantidad }}">
-                                    <button class="btn btn-outline-secondary btn-sumar" type="button">+</button>
-                                </div>
+                            <div class="qty-box">
+                                <button class="btn btn-outline-secondary btn-sm qty-btn qty-minus"
+                                        data-id="{{ p.id }}">–</button>
+                                <span class="qty-value" id="qty-{{ p.id }}">{{ p.cantidad }}</span>
+                                <button class="btn btn-outline-secondary btn-sm qty-btn qty-plus"
+                                        data-id="{{ p.id }}">+</button>
                             </div>
                         </td>
                         <td class="align-middle">{{ p.categoria or '' }}</td>
@@ -83,7 +79,7 @@
                                 <ul class="dropdown-menu">
                                     <li>
                                         {# <a class="dropdown-item"
-href="{{ url_for('productos.editar_producto', id=p.id) }}">Editar</a> #}
+                                            href="{{ url_for('productos.editar_producto', id=p.id) }}">Editar</a> #}
                                         <a class="dropdown-item" href="#">Editar</a>
                                     </li>
                                     <li>
@@ -149,6 +145,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
         btnRestar.addEventListener('click', () => {
             input.value = Math.max(0, parseInt(input.value || 0) - 1);
+        });
+    });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".qty-box").forEach(box => {
+        const minus = box.querySelector(".qty-minus");
+        const plus = box.querySelector(".qty-plus");
+        const valueSpan = box.querySelector(".qty-value");
+        const hiddenInput = box.querySelector(".qty-hidden");
+
+        minus.addEventListener("click", () => {
+            let val = parseInt(valueSpan.textContent) || 0;
+            if (val > 0) val--;
+            valueSpan.textContent = val;
+            hiddenInput.value = val;
+        });
+
+        plus.addEventListener("click", () => {
+            let val = parseInt(valueSpan.textContent) || 0;
+            val++;
+            valueSpan.textContent = val;
+            hiddenInput.value = val;
         });
     });
 });
