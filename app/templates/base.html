@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,62 +7,88 @@
     <title>{% block title %}Inventario Cocina{% endblock %}</title>
 
     <!-- Bootstrap -->
-    <link 
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" 
-        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
+        /* ---------- THEME (light / dark) ---------- */
+        :root {
+            --c-bg: #f4f4f4;
+            --c-text: #222;
+            --c-card: #ffffff;
+            --c-border: #dddddd;
+            --c-primary: #0d6efd;
+            --muted: #6c757d;
+        }
+
+        [data-theme="dark"] {
+            --c-bg: #0f1720;
+            --c-text: #e6eef8;
+            --c-card: #0b1116;
+            --c-border: #22303a;
+            --c-primary: #4da3ff;
+            --muted: #9aa6b2;
+        }
+
         body {
-            background-color: #f4f4f4;
+            background-color: var(--c-bg);
+            color: var(--c-text);
         }
-
+        .card {
+            background: var(--c-card);
+            border-color: var(--c-border);
+        }
         .top-bar {
-            background: #fff;
+            background: var(--c-card);
+            border-bottom: 1px solid var(--c-border);
             padding: 10px;
-            border-bottom: 1px solid #ddd;
+        }
+        .menu-btn {
+            border: none;
+            background: transparent;
+            color: var(--c-text);
+            font-size: 1.45rem;
+        }
+        .badge-cat {
+            font-size: 0.75rem;
+            padding: 0.35em 0.55em;
+            border-radius: 6px;
+            background: rgba(0,0,0,0.06);
         }
 
-        /* Chips scroll horizontales en móvil */
+        /* ---------- layout responsive / filtros ---------- */
         .filtros-scroll {
             overflow-x: auto;
             white-space: nowrap;
         }
         .filtros-scroll a {
-            margin-right: 5px;
+            margin-right: 6px;
             display: inline-block;
         }
 
-        /* Botón "Exportar" adaptado */
         @media (max-width: 768px) {
             .export-movil {
                 width: 100%;
                 margin-top: 10px;
             }
-        }
-
-        /* Ajustar buscador en móvil */
-        @media (max-width: 768px) {
             .search-movil {
                 width: 100%;
-                margin-bottom: 12px;
+                margin-bottom: 10px;
             }
-        }
-
-        .flash-msg {
-            margin-top: 10px;
-        }
-
-        * Limitar nombre en móvil */
-        @media (max-width: 768px) {
+            /* limitar nombre largo en móvil */
             .col-nombre {
                 max-width: 160px;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
+            /* tabla padding y texto */
+            .table td, .table th {
+                padding: 0.45rem;
+                font-size: 0.95rem;
+            }
         }
 
-        /* Estilo del stepper de cantidad */
+        /* ---------- qty stepper ---------- */
         .qty-box {
             display: inline-flex;
             align-items: center;
@@ -70,17 +96,23 @@
         }
 
         .qty-btn {
-            width: 32px;
-            height: 32px;
+            width: 34px;
+            height: 34px;
             padding: 0;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             line-height: 1;
         }
 
         .qty-value {
-            min-width: 32px;
+            min-width: 36px;
             text-align: center;
-            font-weight: bold;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        /* small visual polish */
+        .top-bar .form-control {
+            min-width: 160px;
         }
 
     </style>
@@ -88,31 +120,69 @@
 
 <body>
 
-    <div class="top-bar">
+    <!-- TOPBAR -->
+    <div class="top-bar d-flex align-items-center gap-2">
+        <!-- Drawer button (mobile) -->
+        <button class="menu-btn d-md-none" data-bs-toggle="offcanvas" data-bs-target="#menuDrawer" aria-label="Menú">☰</button>
 
-        <!-- Buscador (en móvil ocupa 100%) -->
-        <form class="d-flex search-movil" method="get" action="#">
-            <input name="q" class="form-control me-2" type="search" placeholder="Buscar producto..." aria-label="Buscar">
-            <button class="btn btn-primary">Buscar</button>
+        <!-- Buscador -->
+        <form class="d-flex flex-grow-1 search-movil" onsubmit="return false;">
+            <input id="mainSearch" name="q" class="form-control me-2" type="search" placeholder="Buscar producto..." aria-label="Buscar">
+            <button class="btn btn-primary d-none d-md-inline">Buscar</button>
         </form>
 
-        <!-- Filtros (scroll horizontal en móvil) -->
-        <div class="filtros-scroll my-2">
+        <!-- Filtros (visible md+, on mobile go to drawer) -->
+        <div class="d-none d-md-flex align-items-center filtros-scroll">
             <a href="#" class="btn btn-outline-secondary filter-btn">Todos</a>
             <a href="#" class="btn btn-outline-info filter-btn">Nevera</a>
             <a href="#" class="btn btn-outline-info filter-btn">Congelador 1</a>
             <a href="#" class="btn btn-outline-info filter-btn">Congelador 2</a>
+            <a href="#" class="btn btn-outline-info filter-btn">Paellas Arriba</a>
         </div>
 
-        <!-- Exportar -->
-        <a href="#" class="btn btn-success export-movil">
-            Exportar Excel
-        </a>
+        <!-- Exportar (desktop small, mobile moved to drawer) -->
+        <a href="#" class="btn btn-success d-none d-md-inline">Exportar Excel</a>
 
+        <!-- Theme toggle -->
+        <button id="themeToggle" class="btn btn-outline-secondary btn-sm ms-2" title="Cambiar tema">🌙</button>
     </div>
 
-    <!-- Flash messages -->
-    <div class="container flash-msg">
+    <!-- OFFCANVAS DRAWER -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="menuDrawer" aria-labelledby="menuDrawerLabel">
+        <div class="offcanvas-header">
+            <h5 id="menuDrawerLabel" class="offcanvas-title">Opciones</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+        </div>
+
+        <div class="offcanvas-body">
+            <h6 class="text-muted">Buscar</h6>
+            <div class="mb-3">
+                <input id="drawerSearch" type="search" class="form-control" placeholder="Buscar producto...">
+            </div>
+
+            <h6 class="text-muted">Filtros</h6>
+            <div class="mb-2">
+                <button class="btn btn-outline-secondary w-100 mb-2" onclick="filterByLocation('')">Todos</button>
+                <button class="btn btn-outline-info w-100 mb-2" onclick="filterByLocation('Nevera')">Nevera</button>
+                <button class="btn btn-outline-info w-100 mb-2" onclick="filterByLocation('Congelador 1')">Congelador 1</button>
+                <button class="btn btn-outline-info w-100 mb-2" onclick="filterByLocation('Congelador 2')">Congelador 2</button>
+                
+            </div>
+
+            <hr>
+
+            <h6 class="text-muted">Acciones</h6>
+            <a href="#" class="btn btn-success w-100 mb-2">Exportar Excel</a>
+
+            <hr>
+
+            <h6 class="text-muted">Gestión</h6>
+            <a class="btn btn-outline-primary w-100 mb-2" href="{# {{ url_for('productos.nuevo_producto') }} #}">Nuevo producto</a>
+        </div>
+    </div>
+
+    <!-- FLASH -->
+    <div class="container mt-3">
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 {% for msg in messages %}
@@ -122,36 +192,99 @@
         {% endwith %}
     </div>
 
-    <!-- Main content -->
-    <div class="container mt-4">
-        {% block content %}{% endblock content %}
+    <!-- MAIN CONTENT -->
+    <div class="container mt-3">
+        {% block content %}{% endblock %}
     </div>
 
-    <!-- Bootstrap JS -->
-    <script 
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
-    </script>
+    <!-- BOOTSTRAP -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+    <!-- SCRIPTS: SEARCH, FILTER, THEME, QTY -->
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const inputSearch = document.querySelector('.top-bar input[name="q"]');
+    (function(){
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', () => {
+            const html = document.documentElement;
+            const cur = html.getAttribute('data-theme') || 'light';
+            const nxt = cur === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', nxt);
+            themeToggle.textContent = nxt === 'dark' ? '☀️' : '🌙';
+        });
+
+        // Filter by location (used by drawer + buttons)
+        window.filterByLocation = function(text) {
+            const table = document.getElementById('productosTable');
+            if (!table) return;
+            const rows = table.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                const ubic = (row.cells[4]?.textContent || '').toLowerCase();
+                if (!text) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = ubic.includes(text.toLowerCase()) ? '' : 'none';
+                }
+            });
+        };
+
+        // Search - main top search and drawer search
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainInput = document.getElementById('mainSearch');
+            const drawerInput = document.getElementById('drawerSearch');
             const tableBody = document.getElementById('productosTable')?.getElementsByTagName('tbody')[0];
 
-            if (!inputSearch || !tableBody) return;
-
-            inputSearch.addEventListener('input', function () {
-                const q = this.value.trim().toLowerCase();
-
+            function searchFunc(q) {
+                if (!tableBody) return;
+                const ql = q.trim().toLowerCase();
                 Array.from(tableBody.rows).forEach(row => {
-                    const cellsText = [
+                    const text = [
                         row.cells[0]?.textContent || '',
                         row.cells[3]?.textContent || '',
+                        row.cells[4]?.textContent || ''
                     ].join(' ').toLowerCase();
+                    row.style.display = text.includes(ql) ? '' : 'none';
+                });
+            }
 
-                    row.style.display = cellsText.includes(q) ? '' : 'none';
+            if (mainInput) {
+                mainInput.addEventListener('input', (e) => searchFunc(e.target.value));
+            }
+            if (drawerInput) {
+                drawerInput.addEventListener('input', (e) => {
+                    // Keep drawer search in sync with top search
+                    if (mainInput) mainInput.value = e.target.value;
+                    searchFunc(e.target.value);
+                });
+            }
+
+            // QTY stepper buttons: update visible span and hidden input (no server call)
+            document.querySelectorAll('.qty-box').forEach(box => {
+                const minus = box.querySelector('.qty-minus');
+                const plus = box.querySelector('.qty-plus');
+                const span = box.querySelector('.qty-value');
+                const hidden = box.querySelector('.qty-hidden');
+
+                // guard in case elements missing
+                if (!span || !hidden) return;
+
+                minus?.addEventListener('click', () => {
+                    let v = parseInt(span.textContent) || 0;
+                    v = Math.max(0, v - 1);
+                    span.textContent = v;
+                    hidden.value = v;
+                });
+
+                plus?.addEventListener('click', () => {
+                    let v = parseInt(span.textContent) || 0;
+                    v = v + 1;
+                    span.textContent = v;
+                    hidden.value = v;
                 });
             });
+
         });
+    })();
     </script>
 
 </body>
