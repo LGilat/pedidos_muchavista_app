@@ -28,7 +28,7 @@ def nuevo_producto():
         db.session.commit()
         flash("Producto creado", "success")
         return redirect(url_for("productos.lista_productos"))
-    return render_template("productos/form.html", form=form, accion="Nuevo")
+    return render_template("productos/nuevoproducto.html", form=form, accion="Nuevo")
 
 @productos_bp.route("/editar/<int:product_id>", methods=["GET", "POST"])
 def editar_producto(product_id):
@@ -42,7 +42,8 @@ def editar_producto(product_id):
         db.session.commit()
         flash("Producto actualizado", "success")
         return redirect(url_for("productos.lista_productos"))
-    return render_template("productos/form.html", form=form, accion="Editar")
+    return render_template("productos/editar.html", form=form, accion="Editar")
+
 
 @productos_bp.route("/borrar/<int:product_id>", methods=["POST"])
 def borrar_producto(product_id):
@@ -51,3 +52,7 @@ def borrar_producto(product_id):
     db.session.commit()
     flash("Producto eliminado", "warning")
     return redirect(url_for("productos.lista_productos"))
+
+
+
+

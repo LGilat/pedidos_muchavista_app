@@ -9,7 +9,7 @@
         <div class="d-flex flex-wrap gap-2">
             <a href="{{ url_for("productos.nuevo_producto") }}"
                class="btn btn-success">+ Nuevo producto</a>
-            <a href="#" class="btn btn-outline-primary">Ir al Inventario</a>
+            <a href="{{ url_for("movimientos.registrar_entradas") }}" class="btn btn-outline-primary">Ir al Inventario</a>
             <!-- BOTÓN PARA EXPORTAR PEDIDO -->
             <button type="submit"
                     form="pedidoForm"
@@ -19,7 +19,7 @@
     </div>
     <!-- FORM PARA EXPORTACIÓN -->
     <form id="pedidoForm"
-          method="POST"
+          method="post"
           action="{{ url_for("export.exportar_excel") }}">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="card mb-3">
@@ -89,8 +89,8 @@
                             </td>
                             <td class="text-end align-middle">
                                 <div class="d-none d-md-inline-block">
-                                    <a href="#" class="btn btn-sm btn-primary">Editar</a>
-                                    <form method="POST"
+                                    <a href="{{ url_for('productos.editar_producto', product_id=p.id) }}" class="btn btn-sm btn-primary" data-id="{{ p.id }}">Editar</a>
+                                    <form method="post"
                                           action="#"
                                           style="display:inline-block"
                                           onsubmit="return confirm('¿Eliminar {{ p.nombre }}?');">
@@ -103,10 +103,10 @@
                                             data-bs-toggle="dropdown">⋮</button>
                                     <ul class="dropdown-menu">
                                         <li>
-                                            <a class="dropdown-item" href="#">Editar</a>
+                                            <a class="dropdown-item" href="{{ url_for('productos.editar_producto', product_id=p.id) }}">Editar</a>
                                         </li>
                                         <li>
-                                            <form method="POST"
+                                            <form method="post"
                                                   action="#"
                                                   onsubmit="return confirm('¿Eliminar {{ p.nombre }}?');">
                                                 <button type="submit" class="dropdown-item text-danger">Eliminar</button>
@@ -187,4 +187,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
     </script>
-{% endblock %}
+{% endblock content %}

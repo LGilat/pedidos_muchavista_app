@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}
+    Productos - Inventario
+{% endblock title %}
+{% block content %}
+    <form method="post" action="{{ url_for('productos.nuevo_producto') }}">
+    {{ form.hidden_tag() }}
+
+    <div class="mb-3">
+        {{ form.nombre.label }}  
+        {{ form.nombre(class="form-control") }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.unidad.label }}  
+        {{ form.unidad(class="form-control") }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.cantidad.label }}  
+        {{ form.cantidad(class="form-control") }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.categoria.label }}  
+        {{ form.categoria(class="form-control") }}
+    </div>
+
+    <button type="submit" class="btn btn-primary"  >Guardar</button>
+    <a href="{{ url_for('productos.lista_productos') }}" class="btn btn-secondary">Cancelar</a>
+</form>
+
+{% endblock content %}
