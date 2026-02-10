@@ -1,0 +1,14 @@
+{% extends "base.html" %} {% block title %}Error interno del servidor{% endblock
+%} {% block content %}
+<div class="container mt-5 text-center">
+    <h1 class="display-4">500</h1>
+    <p class="lead">Algo ha fallado en el servidor. Lo estamos revisando.</p>
+
+    <a
+        href="{{ url_for('productos.lista_productos') }}"
+        class="btn btn-primary mt-3"
+    >
+        Volver al inicio
+    </a>
+</div>
+{% endblock %}

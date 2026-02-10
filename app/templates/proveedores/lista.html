@@ -9,6 +9,11 @@ content %}
         >
             + Nuevo proveedor
         </a>
+        <div class="d-flex gap-2">
+            <a href="{{ url_for("productos.lista_productos") }}"
+               class="btn btn-secondary">Volver</a>
+            <button type="button" id="resetAllBtn" class="btn btn-outline-danger">Poner todas a 0</button>
+        </div>
     </div>
 
     <table class="table table-hover table-bordered">
