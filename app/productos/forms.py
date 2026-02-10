@@ -7,4 +7,5 @@ class ProductoForm(FlaskForm):
     unidad = StringField("Unidad (ej: bolsas, piezas)", validators=[DataRequired()])
     cantidad = FloatField("Cantidad", default=0)
     categoria = StringField("Categoría")
+    ubicacion = StringField("Ubicación")
     submit = SubmitField("Guardar")

@@ -26,6 +26,11 @@
         {{ form.categoria(class="form-control") }}
     </div>
 
+    <div class="mb-3">
+        {{ form.ubicacion.label }}  
+        {{ form.ubicacion(class="form-control") }}
+    </div>
+
     <button type="submit" class="btn btn-primary"  >Guardar</button>
     <a href="{{ url_for('productos.lista_productos') }}" class="btn btn-secondary">Cancelar</a>
 </form>

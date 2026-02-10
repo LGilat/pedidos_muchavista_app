@@ -9,6 +9,7 @@ class Product(db.Model):
     unidad = db.Column(db.String(30), nullable=False)
     cantidad = db.Column(db.Float, default=0)
     categoria = db.Column(db.String(50), nullable=True)
+    ubicacion = db.Column(db.String(100), nullable=True)
 
     movimientos = db.relationship(
         "Movimiento",

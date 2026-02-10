@@ -184,10 +184,10 @@
 
     <!-- FLASH -->
     <div class="container mt-3">
-        {% with messages = get_flashed_messages() %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                {% for msg in messages %}
-                    <div class="alert alert-info">{{ msg }}</div>
+                {% for category, msg in messages %}
+                    <div class="alert alert-{{ category if category in ['success', 'danger', 'warning', 'info'] else 'info' }}">{{ msg }}</div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
