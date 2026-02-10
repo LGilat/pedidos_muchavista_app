@@ -100,7 +100,7 @@
                                 <div class="d-none d-md-inline-block">
                                     <a href="{{ url_for('productos.editar_producto', product_id=p.id) }}" class="btn btn-sm btn-primary" data-id="{{ p.id }}">Editar</a>
                                     <form method="post"
-                                          action="#"
+                                          action="{{ url_for('productos.borrar_producto', product_id=p.id) }}"
                                           style="display:inline-block"
                                           onsubmit="return confirm('¿Eliminar {{ p.nombre }}?');">
                                         <button type="submit" class="btn btn-sm btn-danger">Borrar</button>
