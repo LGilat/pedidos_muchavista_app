@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Histórico de Movimientos{% endblock %}
+
+{% block content %}
+<div class="container mt-3">
+    <h3>Histórico de Movimientos</h3>
+
+    <!-- Filtros -->
+    <form method="get" class="row g-2 mb-3">
+        <div class="col-md-3">
+            <select name="producto_id" class="form-select">
+                <option value="">-- Producto --</option>
+                {% for p in productos %}
+                    <option value="{{ p.id }}" {% if filtros.producto_id == p.id %}selected{% endif %}>{{ p.nombre }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="proveedor_id" class="form-select">
+                <option value="">-- Proveedor --</option>
+                {% for pr in proveedores %}
+                    <option value="{{ pr.id }}" {% if filtros.proveedor_id == pr.id %}selected{% endif %}>{{ pr.nombre }}</option>
+
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="tipo" class="form-select">
+                <option value="">-- Tipo --</option>
+                <option value="entrada" {% if filtros.get('tipo')=='entrada' %}selected{% endif %}>Entrada</option>
+                <option value="salida" {% if filtros.get('tipo')=='salida' %}selected{% endif %}>Salida</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <input type="date" name="fecha_inicio" value="{{ filtros.get('fecha_inicio','') }}" class="form-control" placeholder="Desde">
+        </div>
+        <div class="col-md-2">
+            <input type="date" name="fecha_fin" value="{{ filtros.get('fecha_fin','') }}" class="form-control" placeholder="Hasta">
+        </div>
+        <div class="col-md-12">
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+            <a href="{{ url_for('movimientos.historico_movimientos') }}" class="btn btn-secondary">Reset</a>
+            <a href="{{ url_for("productos.lista_productos") }} " class="btn btn-primary"> Volver </a>
+        </div>
+    </form>
+
+    <!-- Tabla -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Producto</th>
+                    <th>Tipo</th>
+                    <th>Cantidad</th>
+                    <th>Stock Actual</th>
+                    <th>Proveedor</th>
+                    <th>Referencia</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in movimientos %}
+                <tr>
+                    <td>{{ m.fecha.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td>{{ m.producto.nombre }}</td>
+                    <td>{{ m.tipo }}</td>
+                    <td>{{ "%.2f"|format(m.cantidad) }}</td>
+                    <td>{{ "%.2f"|format(m.producto.stock_actual) }}</td>
+                    <td>{{ m.proveedor.nombre if m.proveedor else '' }}</td>
+                    <td>{{ m.referencia or '' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

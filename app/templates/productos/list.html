@@ -10,6 +10,10 @@
             <a href="{{ url_for("productos.nuevo_producto") }}"
                class="btn btn-success">+ Nuevo producto</a>
             <a href="{{ url_for("movimientos.registrar_entradas") }}" class="btn btn-outline-primary">Ir al Inventario</a>
+            <a href="{{ url_for('movimientos.historico_movimientos') }}" class="btn btn-outline-primary">
+                Histórico de movimientos
+            </a>
+
             <!-- BOTÓN PARA EXPORTAR PEDIDO -->
             <button type="submit"
                     form="pedidoForm"

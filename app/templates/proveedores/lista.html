@@ -1,0 +1,49 @@
+{% extends "base.html" %} {% block title %}Proveedores{% endblock %} {% block
+content %}
+<div class="container mt-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Proveedores</h3>
+        <a
+            href="{{ url_for('proveedores.nuevo_proveedor') }}"
+            class="btn btn-primary"
+        >
+            + Nuevo proveedor
+        </a>
+    </div>
+
+    <table class="table table-hover table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+                <th>CIF</th>
+                <th>Notas</th>
+                <th class="text-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in proveedores %}
+            <tr>
+                <td>{{ p.nombre }}</td>
+                <td>{{ p.telefono or "" }}</td>
+                <td>{{ p.cif or "" }}</td>
+                <td>{{ p.notas or "" }}</td>
+                <td class="text-center">
+                    <a
+                        href="{{ url_for('proveedores.editar_proveedor', proveedor_id=p.id) }}"
+                        class="btn btn-sm btn-warning"
+                        >Editar</a
+                    >
+
+                    <a
+                        href="{{ url_for('proveedores.movimientos_proveedor', proveedor_id=p.id) }}"
+                        class="btn btn-sm btn-info"
+                        >Movimientos</a
+                    >
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

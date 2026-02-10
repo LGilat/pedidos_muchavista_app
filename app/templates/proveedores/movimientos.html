@@ -1,0 +1,29 @@
+{% extends "base.html" %} {% block title %}Movimientos de {{ proveedor.nombre
+}}{% endblock %} {% block content %}
+<div class="container mt-3">
+    <h3>Movimientos – {{ proveedor.nombre }}</h3>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>Fecha</th>
+                <th>Producto</th>
+                <th>Tipo</th>
+                <th>Cantidad</th>
+                <th>Referencia</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in movimientos %}
+            <tr>
+                <td>{{ m.fecha.strftime('%Y-%m-%d') }}</td>
+                <td>{{ m.producto.nombre }}</td>
+                <td>{{ m.tipo }}</td>
+                <td>{{ m.cantidad }}</td>
+                <td>{{ m.referencia }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
