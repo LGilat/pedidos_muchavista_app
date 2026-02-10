@@ -4,8 +4,7 @@ from ..extensions import db
 from ..models import Product
 from .forms import ProductoForm
 
-@productos_bp.route("/", methods=["GET","POST"])
-@productos_bp.route("/")
+@productos_bp.route("/", methods=["GET"])
 def lista_productos():
     productos = Product.query.order_by(Product.nombre).all()
 
@@ -22,7 +21,8 @@ def nuevo_producto():
             nombre=form.nombre.data.strip(),
             unidad=form.unidad.data.strip(),
             cantidad=form.cantidad.data or 0,
-            categoria=form.categoria.data.strip() or None
+            categoria=form.categoria.data.strip() or None,
+            ubicacion=form.ubicacion.data.strip() or None,
         )
         db.session.add(p)
         db.session.commit()
@@ -39,6 +39,7 @@ def editar_producto(product_id):
         p.unidad = form.unidad.data.strip()
         p.cantidad = form.cantidad.data or 0
         p.categoria = form.categoria.data.strip() or None
+        p.ubicacion = form.ubicacion.data.strip() or None
         db.session.commit()
         flash("Producto actualizado", "success")
         return redirect(url_for("productos.lista_productos"))

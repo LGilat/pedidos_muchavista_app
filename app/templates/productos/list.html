@@ -94,7 +94,7 @@
                             </td>
                             <td class="d-none d-md-table-cell align-middle">
                                 {{ p.ubicacion or '' }}
-                                <input type="hidden" name="locations[]" value="{{ p.ubicacion }}">
+                                <input type="hidden" name="locations[]" value="{{ p.ubicacion or '' }}">
                             </td>
                             <td class="text-end align-middle">
                                 <div class="d-none d-md-inline-block">
@@ -116,7 +116,7 @@
                                         </li>
                                         <li>
                                             <form method="post"
-                                                  action="#"
+                                                  action="{{ url_for('productos.borrar_producto', product_id=p.id) }}"
                                                   onsubmit="return confirm('¿Eliminar {{ p.nombre }}?');">
                                                 <button type="submit" class="dropdown-item text-danger">Eliminar</button>
                                             </form>
