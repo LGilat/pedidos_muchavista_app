@@ -20,7 +20,7 @@ def nuevo_producto():
         p = Product(
             nombre=form.nombre.data.strip(),
             unidad=form.unidad.data.strip(),
-            cantidad=form.cantidad.data or 0,
+            cantidad=0,
             categoria=form.categoria.data.strip() or None,
             ubicacion=form.ubicacion.data.strip() or None,
         )
@@ -37,7 +37,6 @@ def editar_producto(product_id):
     if form.validate_on_submit():
         p.nombre = form.nombre.data.strip()
         p.unidad = form.unidad.data.strip()
-        p.cantidad = form.cantidad.data or 0
         p.categoria = form.categoria.data.strip() or None
         p.ubicacion = form.ubicacion.data.strip() or None
         db.session.commit()
