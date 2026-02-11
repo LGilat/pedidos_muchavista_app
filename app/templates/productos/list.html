@@ -99,10 +99,12 @@
                             <td class="text-end align-middle">
                                 <div class="d-none d-md-inline-block">
                                     <a href="{{ url_for('productos.editar_producto', product_id=p.id) }}" class="btn btn-sm btn-primary" data-id="{{ p.id }}">Editar</a>
+                                    <a href="{{ url_for('movimientos.registrar_movimiento_producto', product_id=p.id) }}" class="btn btn-sm btn-outline-secondary ms-1">Movimiento</a>
                                     <form method="post"
                                           action="{{ url_for('productos.borrar_producto', product_id=p.id) }}"
-                                          style="display:inline-block"
+                                          style="display:inline-block; margin-left: 4px;"
                                           onsubmit="return confirm('¿Eliminar {{ p.nombre }}?');">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                         <button type="submit" class="btn btn-sm btn-danger">Borrar</button>
                                     </form>
                                 </div>
@@ -115,9 +117,13 @@
                                             <a class="dropdown-item" href="{{ url_for('productos.editar_producto', product_id=p.id) }}">Editar</a>
                                         </li>
                                         <li>
+                                            <a class="dropdown-item" href="{{ url_for('movimientos.registrar_movimiento_producto', product_id=p.id) }}">Registrar movimiento</a>
+                                        </li>
+                                        <li>
                                             <form method="post"
                                                   action="{{ url_for('productos.borrar_producto', product_id=p.id) }}"
                                                   onsubmit="return confirm('¿Eliminar {{ p.nombre }}?');">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                                 <button type="submit" class="dropdown-item text-danger">Eliminar</button>
                                             </form>
                                         </li>

@@ -115,3 +115,34 @@ def historico_movimientos():
         proveedores=proveedores,
         filtros=request.args,
     )
+
+
+@movimientos_bp.route("/producto/<int:product_id>/movimiento", methods=["GET", "POST"])
+def registrar_movimiento_producto(product_id):
+    producto = Product.query.get_or_404(product_id)
+
+    if request.method == "POST":
+        tipo = request.form.get("tipo", "").strip()
+        cantidad_raw = request.form.get("cantidad", "").strip()
+
+        try:
+            cantidad = float(cantidad_raw)
+        except ValueError:
+            cantidad = 0
+
+        if tipo not in ("entrada", "salida") or cantidad <= 0:
+            flash("Debes seleccionar un tipo válido y una cantidad positiva.", "warning")
+            return redirect(request.url)
+
+        mov = Movimiento(
+            producto_id=producto.id,
+            tipo=tipo,
+            cantidad=cantidad,
+        )
+        db.session.add(mov)
+        db.session.commit()
+
+        flash(f"Movimiento de {tipo} registrado correctamente para {producto.nombre}.", "success")
+        return redirect(url_for("productos.lista_productos"))
+
+    return render_template("productos/movimiento.html", producto=producto)
