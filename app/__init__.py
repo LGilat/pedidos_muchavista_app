@@ -6,6 +6,8 @@ from .inventario import inventario_bp
 from .movimientos import movimientos_bp
 from .productos import productos_bp
 from .proveedores import proveedores_bp
+from .pedidos_compra import bp as pedidos_compra_bp
+from .contabilidad import bp as contabilidad_bp
 from .routes import main_bp
 from .services import export_bp
 
@@ -36,5 +38,7 @@ def create_app():
     app.register_blueprint(export_bp, url_prefix="/exportar")
     app.register_blueprint(movimientos_bp, url_prefix="/movimientos")
     app.register_blueprint(proveedores_bp, url_prefix="/proveedores")
+    app.register_blueprint(pedidos_compra_bp, url_prefix="/pedidos_compra")
+    app.register_blueprint(contabilidad_bp, url_prefix="/contabilidad")
     # app.register_blueprint(inventario_bp, url_prefix="/inventario")
     return app

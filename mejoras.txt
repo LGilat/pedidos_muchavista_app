@@ -1,0 +1,47 @@
+  Funcionalidades y Mejoras Adicionales Sugeridas:
+
+
+   1. Informes Contables Avanzados y Visualización (Dashboards):
+       * Gráficos Interactivos: Utilizar librerías como Chart.js o D3.js (integradas vía JavaScript en las plantillas) para visualizar ingresos, gastos y balance neto a lo largo del tiempo.
+       * Informes Personalizables: Permitir al usuario definir rangos de fechas personalizados, filtrar por categoría, tipo de transacción o proveedor.
+       * Exportación de Informes: Además de Excel (como ya mencionaste para productos), permitir exportar informes financieros a PDF o CSV.
+
+
+   2. Gestión de Inventario Integrada con Pedidos de Compra:
+       * Actualización Automática de Stock: Cuando se registra un PedidoCompra con cantidad_recibida, el stock (Product.cantidad) podría actualizarse automáticamente. Esto requiere enlazar el Movimiento de tipo
+         'entrada' con el LineaPedidoCompra.
+       * Alertas de Stock Bajo: Generar notificaciones (por email, o en la interfaz) cuando un producto alcance un nivel mínimo de stock predefinido.
+
+
+   3. Gestión de Ventas y Clientes:
+       * Módulo de Ventas/Pedidos de Clientes: Crear un módulo similar al de pedidos_compra pero para registrar ventas y pedidos de clientes, con sus propias líneas de pedido, precios de venta y cálculo de
+         ingresos.
+       * Facturación: Generación de facturas a clientes basada en los pedidos de venta.
+       * Gestión de Clientes: Base de datos de clientes con historial de compras.
+
+
+   4. Notificaciones y Alertas:
+       * Email para Encargado de Compras: (Ya mencionado) Integrar el envío de informes de productos o confirmaciones de pedido a direcciones de email específicas.
+       * Notificaciones en la Interfaz: Un sistema de notificaciones dentro de la aplicación para eventos importantes (stock bajo, pedido recibido, nueva venta).
+
+
+   5. Autenticación y Autorización (Roles de Usuario):
+       * Implementar Flask-Login para gestionar sesiones de usuario.
+       * Definir roles (ej. Administrador, Encargado de Compras, Contable) y restringir el acceso a ciertas funcionalidades o datos según el rol.
+
+
+   6. Interfaz de Usuario (UI/UX):
+       * Mejoras en Formularios Dinámicos: Utilizar un framework JavaScript (como Vue.js o React) o una librería más avanzada para manejar las líneas de productos en los formularios de PedidoCompra de manera más
+         robusta y fácil de usar.
+       * Búsqueda y Paginación: Implementar funcionalidades de búsqueda avanzada y paginación en las tablas de listado para productos, proveedores, pedidos y transacciones.
+
+
+   7. Integraciones:
+       * Pasarelas de Pago: Si se implementa un módulo de ventas, integración con PayPal, Stripe, etc.
+       * Sistemas de Punto de Venta (POS): Integración con hardware o software de POS para ventas en mostrador.
+
+
+   8. Auditoría:
+       * Registrar quién hizo qué y cuándo en la base de datos (ej. usuario que creó un pedido, que modificó un producto).
+
+  Estas son solo algunas ideas para llevar la aplicación al siguiente nivel. Podríamos priorizarlas en futuras iteraciones.

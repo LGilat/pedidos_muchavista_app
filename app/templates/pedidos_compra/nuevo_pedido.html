@@ -1,0 +1,252 @@
+{% extends "base.html" %} {% block content %}
+<div class="container mt-4">
+    <h2>Registrar Nuevo Pedido de Compra</h2>
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %} {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %} {% endif %} {% endwith %}
+
+    <form
+        method="POST"
+        action="{{ url_for('pedidos_compra.new_purchase_order') }}"
+    >
+        <div class="card p-3 mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Detalles del Pedido</h5>
+                <div class="mb-3">
+                    <label for="proveedor_id" class="form-label"
+                        >Proveedor</label
+                    >
+                    <select
+                        class="form-select"
+                        id="proveedor_id"
+                        name="proveedor_id"
+                        required
+                    >
+                        <option value="">Selecciona un Proveedor</option>
+                        {% for proveedor in proveedores %}
+                        <option value="{{ proveedor.id }}">
+                            {{ proveedor.nombre }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="referencia" class="form-label"
+                        >Referencia (Número de factura/pedido)</label
+                    >
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="referencia"
+                        name="referencia"
+                    />
+                </div>
+                <div class="mb-3">
+                    <label for="fecha_recepcion_esperada" class="form-label"
+                        >Fecha de Recepción Esperada</label
+                    >
+                    <input
+                        type="date"
+                        class="form-control"
+                        id="fecha_recepcion_esperada"
+                        name="fecha_recepcion_esperada"
+                    />
+                </div>
+                <div class="mb-3">
+                    <label for="observaciones_pedido" class="form-label"
+                        >Observaciones del Pedido</label
+                    >
+                    <textarea
+                        class="form-control"
+                        id="observaciones_pedido"
+                        name="observaciones_pedido"
+                        rows="3"
+                    ></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-3 mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Productos del Pedido</h5>
+                <div id="line-items-container">
+                    <div class="row g-3 align-items-end mb-3 line-item">
+                        <div class="col-md-5">
+                            <label for="product_id_0" class="form-label"
+                                >Producto</label
+                            >
+                            <select
+                                class="form-select product-select"
+                                id="product_id_0"
+                                name="items[0][product_id]"
+                                required
+                            >
+                                <option value="">Selecciona un Producto</option>
+                                {% for product in productos %}
+                                <option value="{{ product.id }}">
+                                    {{ product.nombre }} ({{ product.unidad }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="cantidad_recibida_0" class="form-label"
+                                >Cantidad</label
+                            >
+                            <input
+                                type="number"
+                                step="0.01"
+                                class="form-control cantidad-input"
+                                id="cantidad_recibida_0"
+                                name="items[0][cantidad_recibida]"
+                                min="0.01"
+                                required
+                            />
+                        </div>
+                        <div class="col-md-3">
+                            <label for="precio_unitario_0" class="form-label"
+                                >Precio Unitario</label
+                            >
+                            <input
+                                type="number"
+                                step="0.01"
+                                class="form-control precio-input"
+                                id="precio_unitario_0"
+                                name="items[0][precio_unitario]"
+                                min="0.01"
+                                required
+                            />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label text-muted d-block"
+                                >Subtotal</label
+                            >
+                            <span
+                                class="subtotal-display form-control-plaintext"
+                                >0.00 €</span
+                            >
+                        </div>
+                    </div>
+                </div>
+                <button
+                    type="button"
+                    class="btn btn-outline-primary"
+                    id="add-item-btn"
+                >
+                    Añadir Otro Producto
+                </button>
+            </div>
+        </div>
+
+        <div class="card p-3 mb-3">
+            <div class="card-body text-end">
+                <h4 class="card-title">
+                    Total del Pedido:
+                    <span id="total-pedido-display">0.00 €</span>
+                </h4>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg">
+            Guardar Pedido
+        </button>
+        <a
+            href="{{ url_for('pedidos_compra.list_purchase_orders') }}"
+            class="btn btn-secondary btn-lg"
+            >Cancelar</a
+        >
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let itemCounter = 0;
+        const lineItemsContainer = document.getElementById(
+            "line-items-container",
+        );
+        const addItemBtn = document.getElementById("add-item-btn");
+
+        function updateSubtotal(itemRow) {
+            const cantidad =
+                parseFloat(itemRow.querySelector(".cantidad-input").value) || 0;
+            const precio =
+                parseFloat(itemRow.querySelector(".precio-input").value) || 0;
+            const subtotal = (cantidad * precio).toFixed(2);
+            itemRow.querySelector(".subtotal-display").textContent =
+                subtotal + " €";
+            updateTotalPedido();
+        }
+
+        function updateTotalPedido() {
+            let total = 0;
+            document.querySelectorAll(".line-item").forEach((itemRow) => {
+                const cantidad =
+                    parseFloat(
+                        itemRow.querySelector(".cantidad-input").value,
+                    ) || 0;
+                const precio =
+                    parseFloat(itemRow.querySelector(".precio-input").value) ||
+                    0;
+                total += cantidad * precio;
+            });
+            document.getElementById("total-pedido-display").textContent =
+                total.toFixed(2) + " €";
+        }
+
+        function addEventListenersToItem(itemRow) {
+            itemRow
+                .querySelectorAll(".cantidad-input, .precio-input")
+                .forEach((input) => {
+                    input.addEventListener("input", () =>
+                        updateSubtotal(itemRow),
+                    );
+                });
+            itemRow
+                .querySelector(".remove-item-btn")
+                ?.addEventListener("click", function () {
+                    itemRow.remove();
+                    updateTotalPedido();
+                });
+        }
+
+        addItemBtn.addEventListener("click", function () {
+            itemCounter++;
+            const newItemHtml = `
+                <div class="row g-3 align-items-end mb-3 line-item">
+                    <div class="col-md-5">
+                        <label for="product_id_${itemCounter}" class="form-label">Producto</label>
+                        <select class="form-select product-select" id="product_id_${itemCounter}" name="items[${itemCounter}][product_id]" required>
+                            <option value="">Selecciona un Producto</option>
+                            {% for product in productos %}
+                            <option value="{{ product.id }}">{{ product.nombre }} ({{ product.unidad }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="cantidad_recibida_${itemCounter}" class="form-label">Cantidad</label>
+                        <input type="number" step="0.01" class="form-control cantidad-input" id="cantidad_recibida_${itemCounter}" name="items[${itemCounter}][cantidad_recibida]" min="0.01" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="precio_unitario_${itemCounter}" class="form-label">Precio Unitario</label>
+                        <input type="number" step="0.01" class="form-control precio-input" id="precio_unitario_${itemCounter}" name="items[${itemCounter}][precio_unitario]" min="0.01" required>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label text-muted d-block">Subtotal</label>
+                        <span class="subtotal-display form-control-plaintext">0.00 €</span>
+                        <button type="button" class="btn btn-danger btn-sm remove-item-btn mt-2">Eliminar</button>
+                    </div>
+                </div>
+            `;
+            lineItemsContainer.insertAdjacentHTML("beforeend", newItemHtml);
+            addEventListenersToItem(lineItemsContainer.lastElementChild);
+        });
+
+        // Add event listeners to initial item
+        document
+            .querySelectorAll(".line-item")
+            .forEach(addEventListenersToItem);
+        updateTotalPedido(); // Calculate initial total
+    });
+</script>
+{% endblock %}

@@ -22,6 +22,7 @@
             --c-border: #dddddd;
             --c-primary: #0d6efd;
             --muted: #6c757d;
+            --c-text-filter: none;
         }
 
         [data-theme="dark"] {
@@ -31,6 +32,7 @@
             --c-border: #22303a;
             --c-primary: #4da3ff;
             --muted: #9aa6b2;
+            --c-text-filter: invert(1) grayscale(100%) brightness(200%);
         }
 
         body {
@@ -49,8 +51,11 @@
         .menu-btn {
             border: none;
             background: transparent;
-            color: var(--c-text);
-            font-size: 1.45rem;
+            /* color: var(--c-text); */ /* Removed as navbar-toggler-icon handles its own styling */
+            /* font-size: 1.45rem; */ /* Removed as navbar-toggler-icon handles its own styling */
+        }
+        .navbar-toggler-icon {
+            filter: var(--c-text-filter, none); /* Adjust icon color for themes */
         }
         .badge-cat {
             font-size: 0.75rem;
@@ -125,24 +130,50 @@
 <body>
 
     <!-- TOPBAR -->
-    <div class="top-bar d-flex align-items-center gap-2">
-        <!-- Drawer button (mobile) -->
-        <button class="menu-btn d-md-none" data-bs-toggle="offcanvas" data-bs-target="#menuDrawer" aria-label="Menú">☰</button>
+    <nav class="navbar navbar-expand-lg top-bar">
+        <div class="container-fluid">
+            <!-- Drawer button (mobile) -->
+            <button class="menu-btn navbar-toggler d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#menuDrawer" aria-controls="menuDrawer" aria-label="Menú">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-        <!-- Buscador -->
-        <form class="d-flex flex-grow-1 search-movil" onsubmit="return false;">
-            <input id="mainSearch" name="q" class="form-control me-2" type="search" placeholder="Buscar producto..." aria-label="Buscar">
-            <button class="btn btn-primary d-none d-md-inline">Buscar</button>
-        </form>
+            <!-- Brand/Home link -->
+            <a class="navbar-brand d-none d-md-block" href="{{ url_for('productos.lista_productos') }}">Inventario Cocina</a>
 
-        <!-- (Filtros por ubicación ocultos temporalmente) -->
+            <!-- Search Form -->
+            <form class="d-flex flex-grow-1 search-movil" onsubmit="return false;">
+                <input id="mainSearch" name="q" class="form-control me-2" type="search" placeholder="Buscar producto..." aria-label="Buscar">
+                <!-- <button class="btn btn-primary d-none d-md-inline" type="submit">Buscar</button> -->
+            </form>
 
-        <!-- Exportar (desktop small, mobile moved to drawer) -->
-        <a href="#" class="btn btn-success d-none d-md-inline">Exportar Excel</a>
+            <div class="d-flex align-items-center gap-2">
+                <!-- Dropdown for desktop -->
+                <div class="dropdown d-none d-md-block">
+                    <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Gestión
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{{ url_for('productos.lista_productos') }}">Inicio</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ url_for('productos.nuevo_producto') }}">Nuevo Producto</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('pedidos_compra.new_purchase_order') }}">Nuevo Pedido de Compra</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('pedidos_compra.list_purchase_orders') }}">Ver Pedidos de Compra</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ url_for('contabilidad.add_transaction') }}">Nueva Transacción</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('contabilidad.list_transactions') }}">Ver Transacciones</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('contabilidad.list_transaction_categories') }}">Gestionar Categorías</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('contabilidad.financial_report') }}">Informe Financiero</a></li>
+                    </ul>
+                </div>
 
-        <!-- Theme toggle -->
-        <button id="themeToggle" class="btn btn-outline-secondary btn-sm ms-2" title="Cambiar tema">🌙</button>
-    </div>
+                <!-- Exportar (desktop small) -->
+                <!-- <a href="#" class="btn btn-success d-none d-md-inline ms-2">Exportar Excel</a> -->
+
+                <!-- Theme toggle -->
+                <button id="themeToggle" class="btn btn-outline-secondary btn-sm ms-2" title="Cambiar tema">🌙</button>
+            </div>
+        </div>
+    </nav>
 
     <!-- OFFCANVAS DRAWER -->
     <div class="offcanvas offcanvas-start" tabindex="-1" id="menuDrawer" aria-labelledby="menuDrawerLabel">
@@ -168,6 +199,12 @@
 
             <h6 class="text-muted">Gestión</h6>
             <a class="btn btn-outline-primary w-100 mb-2" href="{{ url_for('productos.nuevo_producto') }}">Nuevo producto</a>
+            <a class="btn btn-outline-primary w-100 mb-2" href="{{ url_for('pedidos_compra.new_purchase_order') }}">Nuevo Pedido de Compra</a>
+            <a class="btn btn-outline-primary w-100 mb-2" href="{{ url_for('pedidos_compra.list_purchase_orders') }}">Ver Pedidos de Compra</a>
+            <a class="btn btn-outline-primary w-100 mb-2" href="{{ url_for('contabilidad.add_transaction') }}">Nueva Transacción</a>
+            <a class="btn btn-outline-primary w-100 mb-2" href="{{ url_for('contabilidad.list_transactions') }}">Ver Transacciones</a>
+            <a class="btn btn-outline-primary w-100 mb-2" href="{{ url_for('contabilidad.list_transaction_categories') }}">Gestionar Categorías</a>
+            <a class="btn btn-outline-primary w-100 mb-2" href="{{ url_for('contabilidad.financial_report') }}">Informe Financiero</a>
         </div>
     </div>
 

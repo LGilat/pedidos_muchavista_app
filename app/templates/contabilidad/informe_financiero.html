@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Informe Financiero</h2>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="card mb-4">
+        <div class="card-header">
+            Filtrar por Período
+        </div>
+        <div class="card-body">
+            <form method="GET" action="{{ url_for('contabilidad.financial_report') }}">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label for="periodo_tipo" class="form-label">Tipo de Período</label>
+                        <select class="form-select" id="periodo_tipo" name="periodo_tipo">
+                            <option value="mes" {% if periodo_tipo == 'mes' %}selected{% endif %}>Mensual</option>
+                            <option value="semana" {% if periodo_tipo == 'semana' %}selected{% endif %}>Semanal</option>
+                            <option value="anyo" {% if periodo_tipo == 'anyo' %}selected{% endif %}>Anual</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="fecha_inicio" class="form-label">Fecha de Inicio</label>
+                        <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" value="{{ fecha_inicio_str }}">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="fecha_fin" class="form-label">Fecha de Fin</label>
+                        <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" value="{{ fecha_fin_str }}">
+                    </div>
+                    <div class="col-12 text-end">
+                        <button type="submit" class="btn btn-primary">Aplicar Filtro</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if reporte %}
+    <div class="card mb-4">
+        <div class="card-header">
+            Resultados del Informe ({{ periodo_tipo | capitalize }})
+        </div>
+        <div class="card-body">
+            <h4>Ingresos Totales: <span class="text-success">{{ "%.2f"|format(reporte.total_ingresos) }} €</span></h4>
+            <h4>Gastos Totales: <span class="text-danger">{{ "%.2f"|format(reporte.total_gastos) }} €</span></h4>
+            <h3>Balance Neto: <span class="{% if reporte.balance_neto >= 0 %}text-success{% else %}text-danger{% endif %}">{{ "%.2f"|format(reporte.balance_neto) }} €</span></h3>
+            <hr>
+
+            <h5>Ingresos por Categoría:</h5>
+            <ul>
+                {% for categoria, monto in reporte.ingresos_por_categoria.items() %}
+                <li>{{ categoria }}: {{ "%.2f"|format(monto) }} €</li>
+                {% endfor %}
+            </ul>
+
+            <h5>Gastos por Categoría:</h5>
+            <ul>
+                {% for categoria, monto in reporte.gastos_por_categoria.items() %}
+                <li>{{ categoria }}: {{ "%.2f"|format(monto) }} €</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        Selecciona un período y aplica el filtro para generar un informe.
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Listado de Transacciones</h2>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="d-flex justify-content-end mb-3">
+        <a href="{{ url_for('contabilidad.add_transaction') }}" class="btn btn-primary">Nueva Transacción</a>
+        <a href="{{ url_for('contabilidad.list_transaction_categories') }}" class="btn btn-info ms-2">Gestionar Categorías</a>
+    </div>
+
+    {% if transacciones %}
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tipo</th>
+                <th>Cantidad</th>
+                <th>Fecha</th>
+                <th>Categoría</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaccion in transacciones %}
+            <tr>
+                <td>{{ transaccion.id }}</td>
+                <td>{{ transaccion.tipo.capitalize() }}</td>
+                <td>{{ "%.2f"|format(transaccion.cantidad) }} €</td>
+                <td>{{ transaccion.fecha.strftime('%Y-%m-%d') }}</td>
+                <td>{{ transaccion.categoria.nombre if transaccion.categoria else 'N/A' }}</td>
+                <td>{{ transaccion.descripcion if transaccion.descripcion else 'N/A' }}</td>
+                <td>
+                    {# Add edit/delete actions here later #}
+                    <a href="#" class="btn btn-sm btn-warning">Editar</a>
+                    <a href="#" class="btn btn-sm btn-danger">Eliminar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        No hay transacciones registradas.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
